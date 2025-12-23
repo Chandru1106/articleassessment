@@ -1,0 +1,20 @@
+{
+  "name": "beyondchats-llm-script",
+  "version": "1.0.0",
+  "description": "NodeJS script for fetching, enhancing, and updating articles using LLM",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.3.0",
+    "google-search-results-nodejs": "^2.1.0"
+  },
+  "keywords": ["beyondchats", "llm", "article-enhancement"],
+  "author": "",
+  "license": "MIT"
+}
