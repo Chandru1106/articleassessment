@@ -1,12 +1,20 @@
 import React from 'react';
 
 export function ArticleCard({ article, viewMode, onClick }) {
-    const contentToShow = viewMode === 'original' ? article.original_content : article.content;
+    const contentToShow = viewMode === 'original'
+        ? (article.original_content || article.content || '')
+        : (article.content || '');
     const isShowingOriginal = viewMode === 'original';
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick(article);
+    };
 
     return (
         <div
-            onClick={() => onClick(article)}
+            onClick={handleClick}
             className="group bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/50 hover:-translate-y-1 cursor-pointer"
         >
             {/* Top accent bar */}
@@ -16,8 +24,8 @@ export function ArticleCard({ article, viewMode, onClick }) {
                 {/* Badge */}
                 <div className="flex items-center justify-between mb-4">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full ${isShowingOriginal
-                            ? 'bg-amber-50 text-amber-600 border border-amber-100'
-                            : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                        ? 'bg-amber-50 text-amber-600 border border-amber-100'
+                        : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
                         }`}>
                         {isShowingOriginal ? '📄 Original' : '✨ Enhanced'}
                     </span>
@@ -45,11 +53,11 @@ export function ArticleCard({ article, viewMode, onClick }) {
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-50">
                     <span className="text-xs text-gray-400 font-medium">
-                        {new Date(article.created_at).toLocaleDateString('en-US', {
+                        {article.created_at ? new Date(article.created_at).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric'
-                        })}
+                        }) : 'N/A'}
                     </span>
                     <span className="text-sm font-medium text-blue-500 group-hover:text-blue-600 flex items-center gap-1">
                         Read article
@@ -64,6 +72,12 @@ export function ArticleCard({ article, viewMode, onClick }) {
 }
 
 function stripHtml(html) {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || '';
+    if (!html) return '';
+    try {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        return doc.body.textContent || '';
+    } catch (e) {
+        return String(html);
+    }
 }
+
