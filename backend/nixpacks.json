@@ -1,0 +1,12 @@
+{
+    "require": {
+        "php": "^8.2",
+        "ext-pdo_sqlite": "*"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan config:cache",
+            "php artisan route:cache"
+        ]
+    }
+}
