@@ -1,94 +1,81 @@
 # BeyondChats Article Management System
 
-A full-stack application to scrape, enhance (via LLM), and display blog articles.
+A full-stack application that scrapes articles from BeyondChats, enhances them using AI (Gemini/OpenAI), and displays them in a modern React UI.
 
-## 📋 Project Overview
+## 🌐 Live Demo
 
-This project consists of three main components:
-
-1. **Laravel Backend** - REST API for article CRUD operations + web scraper
-2. **NodeJS Script** - Google search, web scraping, and LLM article enhancement
-3. **React Frontend** - Professional UI to view original and enhanced articles
+- **Frontend:** [https://articleassessment-bhvra1tex-chandrus-projects-a396139f.vercel.app](https://articleassessment-xxx.vercel.app)
+- **Backend API:** [https://abundant-balance-production.up.railway.app/api/articles](https://abundant-balance-production.up.railway.app/api/articles)
 
 ---
 
-## 🏗️ Architecture Diagram
+## 📋 Project Structure
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      React Frontend (Port 3000)                  │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐       │
-│  │ Article List  │  │ Article Card  │  │ Article Detail│       │
-│  │ & Filters     │  │ Components    │  │ Modal + Toggle│       │
-│  └───────┬───────┘  └───────────────┘  └───────────────┘       │
-└──────────┼──────────────────────────────────────────────────────┘
-           │ HTTP GET/PUT
-           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   Laravel Backend (Port 8000)                    │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐       │
-│  │  REST API     │  │  Scraper      │  │  SQLite DB    │       │
-│  │  /api/articles│  │  Command      │  │  (articles)   │       │
-│  └───────────────┘  └───────────────┘  └───────────────┘       │
-└─────────────────────────────────────────────────────────────────┘
-           ▲
-           │ HTTP GET/PUT
-┌──────────┴──────────────────────────────────────────────────────┐
-│                    NodeJS LLM Script                             │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐       │
-│  │ Google Search │  │ Web Scraper   │  │ LLM Enhancer  │       │
-│  │ (SerpAPI)     │  │ (Cheerio)     │  │ (Gemini/GPT)  │       │
-│  └───────────────┘  └───────────────┘  └───────────────┘       │
-└─────────────────────────────────────────────────────────────────┘
+├── backend/           # Laravel 12 REST API
+├── frontend/          # React + Vite + Tailwind CSS
+├── nodejs-script/     # LLM Article Enhancement Script
+└── README.md
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Local Setup Instructions
 
 ### Prerequisites
-- PHP 8.3+ with extensions: openssl, pdo_sqlite, curl, mbstring
-- Node.js 20+ and npm
-- Composer
 
-### 1. Backend Setup
+- **PHP 8.2+** with extensions: `pdo_sqlite`, `curl`, `mbstring`, `openssl`
+- **Composer** (PHP package manager)
+- **Node.js 20+** and npm
+- **Git**
+
+---
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/Chandru1106/articleassessment.git
+cd articleassessment
+```
+
+---
+
+### Step 2: Backend Setup (Laravel)
 
 ```bash
 cd backend
 
-# Install dependencies (if not done)
-php ../composer.phar install
+# Install PHP dependencies
+composer install
 
-# Run migrations
+# Create environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Run database migrations
 php artisan migrate
 
-# Scrape articles from BeyondChats
-php artisan scrape:articles --count=5
+# Seed sample articles (optional)
+php artisan db:seed
 
-# Start server
+# Start Laravel development server
 php artisan serve --port=8000
 ```
 
-### 2. NodeJS Script Setup
+**Backend will run at:** `http://127.0.0.1:8000`
 
+#### Scrape Real Articles (Optional)
 ```bash
-cd nodejs-script
-
-# Install dependencies
-npm install
-
-# Copy environment template
-cp .env.example .env
-
-# Edit .env with your API keys:
-# - SERPAPI_KEY (for Google search)
-# - GEMINI_API_KEY or OPENAI_API_KEY (for LLM)
-
-# Run the script (with Laravel server running)
-npm start
+php artisan scrape:articles --count=5
 ```
 
-### 3. Frontend Setup
+---
+
+### Step 3: Frontend Setup (React)
+
+Open a **new terminal**:
 
 ```bash
 cd frontend
@@ -96,46 +83,40 @@ cd frontend
 # Install dependencies
 npm install
 
-# Start dev server
-npm run dev -- --port 3000
+# Start development server
+npm run dev -- --port=3000
 ```
 
-Open http://localhost:3000 in your browser.
+**Frontend will run at:** `http://localhost:3000`
 
 ---
 
-## 📁 Project Structure
+### Step 4: NodeJS LLM Script Setup (Optional)
 
+This script enhances articles using Google Gemini or OpenAI.
+
+```bash
+cd nodejs-script
+
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env
 ```
-.
-├── backend/                 # Laravel 12 API
-│   ├── app/
-│   │   ├── Console/Commands/ScrapeArticles.php
-│   │   ├── Http/Controllers/ArticleController.php
-│   │   └── Models/Article.php
-│   ├── database/migrations/
-│   └── routes/api.php
-│
-├── nodejs-script/           # NodeJS LLM Enhancement
-│   ├── src/
-│   │   ├── index.js
-│   │   ├── config.js
-│   │   └── services/
-│   │       ├── laravelApi.js
-│   │       ├── googleSearch.js
-│   │       ├── scraper.js
-│   │       └── llmEnhancer.js
-│   └── package.json
-│
-└── frontend/                # React + Vite + Tailwind
-    ├── src/
-    │   ├── App.jsx
-    │   ├── components/
-    │   │   ├── Header.jsx
-    │   │   ├── ArticleCard.jsx
-    │   │   └── ArticleDetail.jsx
-    │   └── services/api.js
-    └── package.json
+
+**Edit `.env` file:**
+```env
+LARAVEL_API_URL=http://127.0.0.1:8000/api
+GEMINI_API_KEY=your_gemini_api_key_here
+LLM_PROVIDER=gemini
+```
+
+**Get a free Gemini API key:** https://aistudio.google.com/app/apikey
+
+**Run the enhancement script:**
+```bash
+npm start
 ```
 
 ---
@@ -144,78 +125,116 @@ Open http://localhost:3000 in your browser.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | /api/articles | List all articles |
-| GET | /api/articles/{id} | Get single article |
-| GET | /api/articles/latest | Get latest article |
-| POST | /api/articles | Create article |
-| PUT | /api/articles/{id} | Update article |
-| DELETE | /api/articles/{id} | Delete article |
-
----
-
-## ⚙️ Environment Variables
-
-### NodeJS Script (.env)
-```
-LARAVEL_API_URL=http://127.0.0.1:8000/api
-SERPAPI_KEY=your_serpapi_key
-GEMINI_API_KEY=your_gemini_key
-LLM_PROVIDER=gemini
-```
-
----
-
-## 📝 How It Works
-
-1. **Scrape Articles**: Run `php artisan scrape:articles` to fetch the 5 oldest articles from BeyondChats blog.
-
-2. **Enhance with LLM**: Run `npm start` in nodejs-script to:
-   - Fetch the latest article
-   - Search Google for similar articles
-   - Scrape content from top 2 results
-   - Use LLM to enhance the article
-   - Save enhanced version with references
-
-3. **View in Frontend**: Open http://localhost:3000 to:
-   - See all articles in a responsive grid
-   - Filter by "Original" or "Enhanced"
-   - Toggle between original/enhanced versions
-   - View reference URLs
+| GET | `/api/articles` | List all articles |
+| GET | `/api/articles/{id}` | Get single article |
+| GET | `/api/articles/latest` | Get latest article |
+| POST | `/api/articles` | Create article |
+| PUT | `/api/articles/{id}` | Update article |
+| DELETE | `/api/articles/{id}` | Delete article |
 
 ---
 
 ## 🎨 Features
 
-- ✅ Responsive article grid with professional styling
-- ✅ Toggle between original and LLM-enhanced versions
-- ✅ Reference citations display
-- ✅ Filter by article status (All/Enhanced/Original)
-- ✅ Loading and error states
-- ✅ Modern UI with Tailwind CSS
+- ✅ **Web Scraping** - Fetch articles from BeyondChats blog
+- ✅ **AI Enhancement** - Improve articles using Gemini/OpenAI
+- ✅ **Reference Citations** - Track sources used for enhancement
+- ✅ **Original/Enhanced Toggle** - Compare versions side-by-side
+- ✅ **Modern UI** - Clean, responsive React interface
+- ✅ **Filter by Status** - View All, Enhanced, or Original articles
 
 ---
 
-## 🔧 Trade-offs Made
+## 🚢 Deployment Guide
 
-| Decision | Rationale |
-|----------|-----------|
-| SQLite over MySQL | Simpler setup, no external DB required |
-| DuckDuckGo fallback | Free alternative when SerpAPI is unavailable |
-| Supports both Gemini & OpenAI | Flexibility in LLM choice |
+### Deploy Backend to Railway
+
+1. Go to [railway.app](https://railway.app)
+2. Create new project → Deploy from GitHub
+3. Select this repository
+4. Set **Root Directory:** `backend`
+5. Add environment variables:
+   ```
+   APP_KEY=base64:YOUR_APP_KEY
+   APP_ENV=production
+   APP_DEBUG=false
+   DB_CONNECTION=sqlite
+   ```
+
+### Deploy Frontend to Vercel
+
+1. Go to [vercel.com](https://vercel.com)
+2. Import repository from GitHub
+3. Set **Root Directory:** `frontend`
+4. Set **Framework Preset:** Vite
+5. Add environment variable:
+   ```
+   VITE_API_URL=https://your-railway-url.railway.app/api
+   ```
 
 ---
 
-## 🚧 What I'd Improve with More Time
+## 🛠️ Tech Stack
 
-- Add authentication and user management
-- Implement article scheduling/queue for batch processing
-- Add more comprehensive error handling
-- Deploy to cloud (Railway/Vercel)
-- Add unit and integration tests
-- Implement real-time updates with WebSockets
+| Layer | Technology |
+|-------|------------|
+| Backend | Laravel 12, PHP 8.3, SQLite |
+| Frontend | React 18, Vite, Tailwind CSS |
+| LLM Script | Node.js, Axios, Cheerio |
+| AI | Google Gemini / OpenAI GPT |
+| Deployment | Railway (backend), Vercel (frontend) |
 
 ---
 
-## 📅 Deadline
+## 📁 Key Files
 
-December 25, 2025 at 11:59 PM IST
+| File | Description |
+|------|-------------|
+| `backend/app/Http/Controllers/ArticleController.php` | REST API logic |
+| `backend/app/Console/Commands/ScrapeArticles.php` | Web scraper |
+| `frontend/src/App.jsx` | Main React component |
+| `frontend/src/components/ArticleCard.jsx` | Article card component |
+| `frontend/src/components/ArticleDetail.jsx` | Article modal |
+| `nodejs-script/src/index.js` | LLM enhancement orchestrator |
+| `nodejs-script/src/services/llmEnhancer.js` | Gemini/OpenAI integration |
+
+---
+
+## 📝 How It Works
+
+```
+1. SCRAPE → php artisan scrape:articles
+   ↓
+   Fetches 5 oldest articles from BeyondChats blog
+   ↓
+   Stores in SQLite database as "original"
+
+2. ENHANCE → npm start (in nodejs-script/)
+   ↓
+   Searches Google for related articles
+   ↓
+   Scrapes top 2 reference articles
+   ↓
+   Uses LLM to improve content
+   ↓
+   Updates article as "enhanced" with references
+
+3. VIEW → React Frontend
+   ↓
+   Displays all articles with Original/Enhanced toggle
+   ↓
+   Shows reference citations
+```
+
+---
+
+## 👨‍💻 Author
+
+**Chandru** - [GitHub](https://github.com/Chandru1106)
+
+---
+
+## 📅 Assignment
+
+BeyondChats Technical Product Manager Assignment  
+**Deadline:** December 25, 2025
